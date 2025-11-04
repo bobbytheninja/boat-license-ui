@@ -11,6 +11,17 @@ export default function ExamPage({ onNav, questions, mode, overallPts, mockPts, 
   const [confirmExit, setConfirmExit] = useState(false)
   const [overviewOpen, setOverviewOpen] = useState(true)
 
+  if (!q) {
+  return (
+    <Page>
+      <TopBar onNav={onNav} current="home" />
+      <Card>
+        <div className="p-5">No questions available. Please go back.</div>
+      </Card>
+    </Page>
+  );
+}
+
   const q = questions[index]
   if (!q) return (<Page><TopBar onNav={onNav} current="home" /><Card><div className="p-5">No questions available. Please go back.</div></Card></Page>)
 

@@ -40,19 +40,41 @@ export default function App(){
     return map
   }, [composition])
 
-  function catQuestions(cat){ return DEMO_QUESTIONS.filter(q=>q.category===cat) }
+  // Helper: return questions for a category whether DEMO_QUESTIONS is an object map or an array
+  function poolAllForCategory(category) {
+    if (!category) return []
+    if (Array.isArray(DEMO_QUESTIONS)) {
+      return DEMO_QUESTIONS.filter(q => q.category === category)
+    }
+    if (DEMO_QUESTIONS && typeof DEMO_QUESTIONS === 'object') {
+      return DEMO_QUESTIONS[category] || []
+    }
+    return []
+  }
 
-  function startExam(category, m){
+  function startExam(category, m) {
     setActiveCategory(category)
     setMode(m)
-    const pool = m==='free' ? catQuestions(category).filter(q=>q.isMock) : catQuestions(category)
-    const wants = composition[category]
+
+    // Choose question pool
+    const poolAll = poolAllForCategory(category)
+    const pool = m === 'free' ? poolAll.filter((q) => q.isMock) : poolAll
+
+    // Friendly handling when there are no questions for a category
+    if (!pool || pool.length === 0) {
+      alert('No questions available for this category yet. Please choose another category.')
+      setRoute('category')
+      return
+
+    }
+
+    const wants = composition[category] || { w3: 10, w2: 10, w1: 10 }
     const { set, warnings } = composeFlexible(pool, wants)
     setExamQs(set)
     setAnswers({})
     setSummary(null)
     setRoute('exam')
-    if (warnings.length) console.warn('Composition warnings:\n' + warnings.join('\n'))
+    if (warnings && warnings.length) console.warn('Composition warnings:\n' + warnings.join('\n'))
   }
 
   function setRouteWithCategory(category){
