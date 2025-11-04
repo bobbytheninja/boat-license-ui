@@ -1,9 +1,10 @@
 import React from 'react'
 import TopBar from './TopBar.jsx'
 import Card from './ui/Card.jsx'
-import { categories } from './data.js'
+import { loadCategories } from './data.js'
 
-export default function Home({ onNav, onPick, price }){
+export default function Home({ onNav, onPick, price, canResume, onResume }){
+  const categories = loadCategories()
   return (
     <div className="min-h-dvh">
       <div className="relative h-[42vh] w-full overflow-hidden rounded-b-2xl">
@@ -14,11 +15,12 @@ export default function Home({ onNav, onPick, price }){
             <button onClick={()=>onNav('home')} className="w-10 h-10 rounded-full bg-white/95 text-neutral-900 grid place-items-center">⛵</button>
             <div className="text-2xl font-semibold">AquaSkipper</div>
           </div>
-          <h1 className="text-4xl font-extrabold">Master your Boat License</h1>
-          <p className="text-white/90 mt-2 max-w-2xl">Practice realistic, weighted exams with images, instant feedback, and a smart review system.</p>
+          <h1 className="text-4xl font-extrabold">Take a test!</h1>
+          <p className="text-white/90 mt-2 max-w-2xl">Practice realistic mock exams with images, weighted scoring, timers, and instant review.</p>
           <div className="mt-4 flex gap-3">
             <button onClick={()=>onNav('pricing')} className="bg-white text-neutral-900 px-4 py-2 rounded-full">Subscribe €{price}/mo</button>
             <button onClick={()=>onNav('contact')} className="bg-white/10 border border-white/40 text-white px-4 py-2 rounded-full">Contact</button>
+            {canResume && (<button onClick={onResume} className="bg-emerald-500/90 text-white px-4 py-2 rounded-full">Resume exam</button>)}
           </div>
         </div>
       </div>
@@ -27,9 +29,8 @@ export default function Home({ onNav, onPick, price }){
         <TopBar onNav={onNav} current="home" />
         <div className="mb-5">
           <h2 className="text-2xl font-bold tracking-tight">Choose your category</h2>
-          <p className="text-neutral-600">Click a card to open its exam options.</p>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {categories.map((c)=>(
             <button key={c.id} onClick={()=>onPick(c.id)} className="group text-left">
               <Card>
@@ -45,19 +46,6 @@ export default function Home({ onNav, onPick, price }){
           ))}
         </div>
       </div>
-
-      <footer className="border-t bg-white">
-        <div className="max-w-6xl mx-auto px-3 py-5 text-sm text-neutral-600 flex items-center justify-between">
-          <div>© {new Date().getFullYear()} AquaSkipper</div>
-          <div className="flex gap-4">
-            <a href="#" onClick={(e)=>{e.preventDefault(); onNav('contact')}} className="hover:underline">Contact</a>
-            <a href={`mailto:hello@aquaskipper.example?subject=Careers%20at%20AquaSkipper`} className="hover:underline">Careers</a>
-            <a href={`mailto:hello@aquaskipper.example?subject=Partnership%20Inquiry`} className="hover:underline">Partnerships</a>
-            <a href={`mailto:hello@aquaskipper.example?subject=Training%20with%20AquaSkipper`} className="hover:underline">Training</a>
-            <a href={`mailto:hello@aquaskipper.example?subject=FAQ`} className="hover:underline">FAQ</a>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
